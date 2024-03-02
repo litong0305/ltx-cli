@@ -1,5 +1,5 @@
 import ora from "ora";
-import logger from "./Logger.js";
+import Logger from "./Logger.js";
 class Spinner {
     spinner;
     constructor() {
@@ -25,7 +25,7 @@ class Spinner {
 
   // 加载失败
     fail = (text = '') => {
-        this.spinner.fail(logger.red(text));
+        this.spinner.fail(Logger.red(text));
     };
 }
 

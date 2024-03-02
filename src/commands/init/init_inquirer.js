@@ -1,7 +1,7 @@
 import { input, select }  from '@inquirer/prompts';
 import { ProjectNameOperationEnum, MethodOfCreationEnum, ProjectNameOperationMap, MethodOfCreationMap, TemplateChoosesMap } from './init_consts.js';
-import { checkDir } from '../../utils/file.js';
-
+import { checkDir, getFileAbsolutePath } from '../../utils/file.js';
+import { getGitUserName } from '../../utils/git.js';
 /*
  * 获取项目名称的值
  * @returns 
@@ -11,7 +11,7 @@ const getProjectName = async () => {
         message: "请输入项目名称", 
         validate: (value) => /^(?!_)(?!.*?_$)[a-zA-Z0-9_]+$/.test(value)? true : '请输入包含有数字、字母、下划线，且不以下划线开头和结尾的项目名称。',
     });
-    if(!checkDir(projectName)) {
+    if(!checkDir(getFileAbsolutePath(projectName))) {
       return { projectName }  
     }
 
@@ -26,6 +26,16 @@ const getProjectName = async () => {
    return await getProjectName();
 }
 
+/**
+ * 获取作者信息
+ * @returns 
+ */
+const getAuthor = async () => ({
+    author: await input({
+        message: '请输入作者',
+        default: getGitUserName('username'),
+    })
+})
 /**
  * 获取选择的模版信息
  * @returns 
@@ -57,6 +67,7 @@ const getTempalteInfo = async () => await select({
 const getAnswers = async () => {
     return {
         ... await getProjectName(),
+        ... await  getAuthor(),
         ... await getMethodOfCreation(),
     }
 }
